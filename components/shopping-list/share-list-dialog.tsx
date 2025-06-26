@@ -69,7 +69,7 @@ export function ShareListDialog({ list, open, onOpenChange }: ShareListDialogPro
     window.open(whatsappUrl, "_blank")
   }
 
-  const shareMessage = `Lista de compras: ${list.name}\n${list.description ? list.description + "\n" : ""}Accede aquí: ${shareUrl}`
+  const shareMessage = `Lista de compras: ${list.name}\nAccede aquí: ${shareUrl}`
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

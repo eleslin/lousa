@@ -27,25 +27,22 @@ export interface Database {
       shopping_lists: {
         Row: {
           id: string
-          name: string
-          description: string | null
           owner_id: string
+          name: string
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
-          name: string
-          description?: string | null
           owner_id: string
+          name?: string
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
-          name?: string
-          description?: string | null
           owner_id?: string
+          name?: string
           created_at?: string
           updated_at?: string
         }
@@ -57,10 +54,10 @@ export interface Database {
           name: string
           quantity: number
           category: string
-          is_completed: boolean
-          is_recurring: boolean
-          recurring_days: number | null
-          last_added: string
+          status: string
+          added_by: string | null
+          completed_by: string | null
+          completed_at: string | null
           created_at: string
           updated_at: string
         }
@@ -70,10 +67,10 @@ export interface Database {
           name: string
           quantity?: number
           category?: string
-          is_completed?: boolean
-          is_recurring?: boolean
-          recurring_days?: number | null
-          last_added?: string
+          status?: string
+          added_by?: string | null
+          completed_by?: string | null
+          completed_at?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -83,42 +80,55 @@ export interface Database {
           name?: string
           quantity?: number
           category?: string
-          is_completed?: boolean
-          is_recurring?: boolean
-          recurring_days?: number | null
-          last_added?: string
+          status?: string
+          added_by?: string | null
+          completed_by?: string | null
+          completed_at?: string | null
           created_at?: string
           updated_at?: string
         }
       }
-      list_members: {
+      list_shares: {
         Row: {
           id: string
           list_id: string
-          user_id: string
-          role: string
-          joined_at: string
+          shared_with: string
+          shared_by: string
+          created_at: string
         }
         Insert: {
           id?: string
           list_id: string
-          user_id: string
-          role?: string
-          joined_at?: string
+          shared_with: string
+          shared_by: string
+          created_at?: string
         }
         Update: {
           id?: string
           list_id?: string
-          user_id?: string
-          role?: string
-          joined_at?: string
+          shared_with?: string
+          shared_by?: string
+          created_at?: string
         }
       }
     }
   }
 }
 
+// Tipos exportados para usar en la aplicación
+export type Profile = Database["public"]["Tables"]["profiles"]["Row"]
 export type ShoppingList = Database["public"]["Tables"]["shopping_lists"]["Row"]
 export type ShoppingItem = Database["public"]["Tables"]["shopping_items"]["Row"]
-export type Profile = Database["public"]["Tables"]["profiles"]["Row"]
-export type ListMember = Database["public"]["Tables"]["list_members"]["Row"]
+export type ListShare = Database["public"]["Tables"]["list_shares"]["Row"]
+
+// Tipos para insertar datos
+export type ProfileInsert = Database["public"]["Tables"]["profiles"]["Insert"]
+export type ShoppingListInsert = Database["public"]["Tables"]["shopping_lists"]["Insert"]
+export type ShoppingItemInsert = Database["public"]["Tables"]["shopping_items"]["Insert"]
+export type ListShareInsert = Database["public"]["Tables"]["list_shares"]["Insert"]
+
+// Tipos para actualizar datos
+export type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"]
+export type ShoppingListUpdate = Database["public"]["Tables"]["shopping_lists"]["Update"]
+export type ShoppingItemUpdate = Database["public"]["Tables"]["shopping_items"]["Update"]
+export type ListShareUpdate = Database["public"]["Tables"]["list_shares"]["Update"]

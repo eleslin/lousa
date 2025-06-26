@@ -10,7 +10,7 @@ import type { ShoppingItem as ShoppingItemType } from "@/types/database"
 
 interface ShoppingItemProps {
   item: ShoppingItemType
-  onToggleComplete: (id: string, completed: boolean) => void
+  onToggleComplete: (id: string, isCompleted: string) => void
   onEdit: (item: ShoppingItemType) => void
   onDelete: (id: string) => void
 }
@@ -47,7 +47,7 @@ export function ShoppingItemComponent({ item, onToggleComplete, onEdit, onDelete
   const handleToggleComplete = async () => {
     setIsUpdating(true)
     try {
-      await onToggleComplete(item.id, !item.is_completed)
+      await onToggleComplete(item.id, !item.completed_at ? "completed" : "active")
     } finally {
       setIsUpdating(false)
     }
@@ -56,13 +56,13 @@ export function ShoppingItemComponent({ item, onToggleComplete, onEdit, onDelete
   return (
     <div
       className={`flex items-center space-x-3 p-3 rounded-lg border transition-all ${
-        item.is_completed
+        item.completed_at
           ? "bg-gray-800/50 border-gray-700 opacity-60"
           : "bg-gray-800 border-gray-700 hover:bg-gray-750"
       }`}
     >
       <Checkbox
-        checked={item.is_completed}
+        checked={item.completed_at ? true : false}
         onCheckedChange={handleToggleComplete}
         disabled={isUpdating}
         className="data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
@@ -70,7 +70,7 @@ export function ShoppingItemComponent({ item, onToggleComplete, onEdit, onDelete
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center space-x-2">
-          <span className={`font-medium ${item.is_completed ? "line-through text-gray-500" : "text-white"}`}>
+          <span className={`font-medium ${item.completed_at ? "line-through text-gray-500" : "text-white"}`}>
             {item.name}
           </span>
           {item.quantity > 1 && (
@@ -78,12 +78,12 @@ export function ShoppingItemComponent({ item, onToggleComplete, onEdit, onDelete
               x{item.quantity}
             </Badge>
           )}
-          {item.is_recurring && (
+          {/* {item.is_recurring && (
             <Badge variant="secondary" className="bg-blue-900 text-blue-300 text-xs">
               <RotateCcw className="w-3 h-3 mr-1" />
               Recurrente
             </Badge>
-          )}
+          )} */}
         </div>
         <div className="flex items-center space-x-2 mt-1">
           <Badge

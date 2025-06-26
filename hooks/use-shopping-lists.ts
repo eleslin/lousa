@@ -25,7 +25,7 @@ export function useShoppingLists() {
 
   const createList = async (name: string, description?: string) => {
     try {
-      const newList = await shoppingListService.createList(name, description)
+      const newList = await shoppingListService.createList(name)
       setLists((prev) => [newList, ...prev])
       return newList
     } catch (err) {

@@ -57,7 +57,7 @@ export function useShoppingItems(listId: string) {
     }
   }
 
-  const toggleComplete = async (id: string, isCompleted: boolean) => {
+  const toggleComplete = async (id: string, isCompleted: string) => {
     try {
       const updatedItem = await shoppingItemService.toggleComplete(id, isCompleted)
       setItems((prev) => prev.map((item) => (item.id === id ? updatedItem : item)))

@@ -20,7 +20,6 @@ export class ShoppingListRepository {
       .from("shopping_lists")
       .insert({
         name,
-        description,
         owner_id: user.id,
       })
       .select()
@@ -109,8 +108,8 @@ export class ShoppingItemRepository {
     if (error) throw error
   }
 
-  async toggleComplete(id: string, isCompleted: boolean): Promise<ShoppingItem> {
-    return this.updateItem(id, { is_completed: isCompleted })
+  async toggleComplete(id: string, isCompleted: string): Promise<ShoppingItem> {
+    return this.updateItem(id, { completed_at: isCompleted })
   }
 }
 

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/auth-context"
-import { useShoppingItems } from "@/hooks/use-shopping-items"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -14,6 +13,7 @@ import { AddItemDialog } from "@/components/shopping-list/add-item-dialog"
 import { ShareListDialog } from "@/components/shopping-list/share-list-dialog"
 import { supabase } from "@/lib/supabase"
 import type { ShoppingList, ShoppingItem as ShoppingItemType } from "@/types/database"
+import { useShoppingItems } from "@/hooks/use-shopping-items"
 
 export default function ListDetailPage() {
   const params = useParams()
@@ -76,13 +76,13 @@ export default function ListDetailPage() {
   const filteredItems = items.filter((item) => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = filterCategory === "all" || item.category === filterCategory
-    const matchesCompleted = showCompleted || !item.is_completed
+    const matchesCompleted = showCompleted || !item.completed_at
 
     return matchesSearch && matchesCategory && matchesCompleted
   })
 
-  const completedItems = items.filter((item) => item.is_completed)
-  const pendingItems = items.filter((item) => !item.is_completed)
+  const completedItems = items.filter((item) => item.completed_at)
+  const pendingItems = items.filter((item) => !item.completed_at)
   const completionPercentage = items.length > 0 ? Math.round((completedItems.length / items.length) * 100) : 0
 
   const categories = Array.from(new Set(items.map((item) => item.category)))
@@ -104,11 +104,7 @@ export default function ListDetailPage() {
               >
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <div>
-                <h1 className="text-xl font-bold text-white">{list?.name || "Cargando..."}</h1>
-                {list?.description && <p className="text-gray-400 text-sm">{list.description}</p>}
-              </div>
-            </div>
+             </div>
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"

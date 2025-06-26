@@ -46,8 +46,6 @@ export function AddItemDialog({ open, onOpenChange, onSave, listId, editingItem 
       setName(editingItem.name)
       setQuantity(editingItem.quantity)
       setCategory(editingItem.category)
-      setIsRecurring(editingItem.is_recurring)
-      setRecurringDays(editingItem.recurring_days || 7)
     } else {
       setName("")
       setQuantity(1)
@@ -67,10 +65,10 @@ export function AddItemDialog({ open, onOpenChange, onSave, listId, editingItem 
         name: name.trim(),
         quantity,
         category,
-        is_completed: editingItem?.is_completed || false,
-        is_recurring: isRecurring,
-        recurring_days: isRecurring ? recurringDays : null,
-        last_added: new Date().toISOString(),
+        status: "",
+        added_by: null,
+        completed_by: null,
+        completed_at: null
       })
       onOpenChange(false)
     } catch (error) {
@@ -146,7 +144,6 @@ export function AddItemDialog({ open, onOpenChange, onSave, listId, editingItem 
               <Checkbox
                 id="recurring"
                 checked={isRecurring}
-                onCheckedChange={setIsRecurring}
                 className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
               />
               <Label htmlFor="recurring" className="text-gray-200">

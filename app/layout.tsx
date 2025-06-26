@@ -10,7 +10,6 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Lista de Compras - Organiza y Comparte",
   description: "Aplicación para crear, organizar y compartir listas de compras en tiempo real",
-    generator: 'v0.dev'
 }
 
 export default function RootLayout({
