@@ -1,0 +1,41 @@
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  background-color: white;
+  color: black;
+}
+
+.button {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.button.google {
+  background-color: #db4437;
+}
+
+.separator {
+  margin: 1rem 0;
+  color: #666;
+}
+
+.message {
+  font-size: 0.9rem;
+  color: #28a745;
+}
