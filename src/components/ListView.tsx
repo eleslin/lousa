@@ -5,6 +5,7 @@ import { type User } from "@supabase/supabase-js";
 import { Check, ChevronLeft, Copy, Loader, Plus, QrCode, Share2, Trash2, Minus, PlusCircle } from "lucide-react";
 import { type ShoppingList, type ShoppingListItem } from "../core/types";
 import { toast } from 'react-hot-toast';
+import Select from 'react-select';
 
 export default function ListView() {
   const { id } = useParams();
@@ -13,7 +14,6 @@ export default function ListView() {
   const [loading, setLoading] = useState(true);
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<string>('');
   const [productList, setProductList] = useState<string[]>([]);
   const [newProduct, setNewProduct] = useState({ name: '', quantity: '1' });
   const [adding, setAdding] = useState(false);
@@ -24,8 +24,9 @@ export default function ListView() {
     const fetchUser = async () => {
       const user = await getUser(); 
         if (user) {
+          console.log(user);
             setUser(user);
-            if (id && user) {
+            if (id && user && user.id) {
               loadListData();
             }
         } else {
@@ -40,11 +41,11 @@ export default function ListView() {
       // Cargar productos del usuario
       const { data: productsData, error: productsError } = await supabase
         .from('products')
-        .select('name')
-        .eq('user_id', user?.id);
+        .select('name');
 
       if (productsError) throw productsError;
       setProductList(productsData?.map(p => p.name) || []);
+      // Cargar información de la lista
       // Cargar información de la lista
       const { data: listData, error: listError } = await supabase
         .from('shopping_lists')
@@ -149,6 +150,16 @@ export default function ListView() {
           onConflict: 'user_id,name',
           ignoreDuplicates: false 
         });
+
+      // Actualizar la lista de productos disponibles
+      const { data: updatedProducts, error: productsError } = await supabase
+        .from('products')
+        .select('name')
+        .eq('user_id', user?.id);
+
+      if (!productsError) {
+        setProductList(updatedProducts?.map(p => p.name) || []);
+      }
 
       setNewProduct({ name: '', quantity: '1' });
       setShowAddProduct(false);
@@ -268,32 +279,54 @@ export default function ListView() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6">
-        {/* Add product button */}
-        <button
-          onClick={() => setShowAddProduct(true)}
-          className="w-full mb-6 p-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors"
-        >
-          <Plus className="w-5 h-5" />
-          Añadir producto
-        </button>
-
-        {/* Product selection dropdown */}
+        {/* Add product section */}
         <div className="mb-6">
-          <select
-            value={selectedProduct}
-            onChange={(e) => {
-              setSelectedProduct(e.target.value);
-              setNewProduct({ ...newProduct, name: e.target.value });
-            }}
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-          >
-            <option value="">Seleccionar producto...</option>
-            {productList.map((product) => (
-              <option key={product} value={product}>
-                {product}
-              </option>
-            ))}
-          </select>
+          <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowAddProduct(!showAddProduct)}
+                  className="text-green-500 hover:text-green-600"
+                >
+                  <Plus className="w-5 h-5" />
+                </button>
+                <span className="text-gray-600 dark:text-gray-300">Añadir producto</span>
+              </div>
+              {showAddProduct && (
+                <div className="flex items-center gap-4">
+                  <Select
+                    value={{ value: newProduct.name, label: newProduct.name || 'Seleccionar producto...' }}
+                    onChange={(option) => setNewProduct({ ...newProduct, name: option?.value || '' })}
+                    options={productList.map(product => ({ value: product, label: product }))}
+                    placeholder="Seleccionar producto..."
+                    className="basic-single w-full"
+                    classNamePrefix="select"
+                    isClearable
+                    isSearchable
+                    menuPlacement="auto"
+                  />
+                  <input
+                    type="number"
+                    value={newProduct.quantity}
+                    onChange={(e) => setNewProduct({ ...newProduct, quantity: e.target.value })}
+                    className="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                    min="1"
+                  />
+                  <button
+                    onClick={addProduct}
+                    className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg"
+                    disabled={adding || !newProduct.name.trim()}
+                  >
+                    {adding ? (
+                      <Loader className="w-4 h-4 animate-spin" />
+                    ) : (
+                      'Añadir'
+                    )}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Products list */}
@@ -370,7 +403,7 @@ export default function ListView() {
       </main>
 
       {/* Add Product Modal */}
-      {showAddProduct && (
+      {/* {showAddProduct && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-sm w-full">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
@@ -416,7 +449,7 @@ export default function ListView() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Share Modal */}
       {showShareModal && (
